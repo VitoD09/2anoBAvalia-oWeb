@@ -24,109 +24,16 @@
       max-width: 95%;
       box-sizing: border-box;
     }
-    #btnAjustes {
-        background-color: #8B4513;
-        color: white;
-        padding: 10px 20px;
-        border: 2px solid #D2691E;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 15px;
-        font-family: 'Courier New', Courier, monospace;
-        font-weight: bold;
-    }
-    #btnAjustes:hover {
-        background-color: #A0522D;
-    }
-
-    .janela {
-        display: none; 
-        position: fixed; 
-        z-index: 1; 
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.6);
-    }
-    .janela-conteudo {
-        background-color: #2a2a2a;
-        margin: 15% auto;
-        padding: 20px;
-        border: 4px groove #8B4513;
-        width: 80%;
-        max-width: 400px;
-        color: white;
-        text-align: center;
-        border-radius: 10px;
-        position: relative;
-    }
-    .btnFechar {
-        color: #aaa;
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 28px;
-        font-weight: bold;
-    }
-    .btnFechar:hover,
-    .btnFechar:focus {
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .janela-conteudo h2 {
-        color: #D2691E;
-    }
-    .janela-conteudo p {
-        font-size: 18px;
-        line-height: 1.6;
-    }
-    .janela-conteudo strong {
-        color: #ffc107;
-    }
   </style>
 </head>
 <body>
   <canvas id="jogo" width="500" height="300"></canvas>
-  
-  <button id="btnAjustes">Controles</button>
-
-  <div id="ajustesJanela" class="janela">
-    <div class="janela-conteudo">
-      <span class="btnFechar">&times;</span>
-      <h2>Controles do Jogo</h2>
-      <p><strong>W:</strong> Pular</p>
-      <p><strong>A:</strong> Mover para Esquerda</p>
-      <p><strong>D:</strong> Mover para Direita</p>
-      <p><strong>Q:</strong> Dash (Esquiva)</p>
-      <p><strong>Enter:</strong> Atacar</p>
-    </div>
-  </div>
-
 
   <script>
     const tela = document.getElementById("jogo");
     const ctx = tela.getContext("2d");
     ctx.imageSmoothingEnabled = false;
 
-    const modal = document.getElementById("ajustesJanela");
-    const btn = document.getElementById("btnAjustes");
-    const span = document.getElementsByClassName("btnFechar")[0];
-
-    btn.onclick = function() {
-      modal.style.display = "block";
-    }
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
     const imagemCavaleiro = new Image();
     imagemCavaleiro.src = "https://files.catbox.moe/82ol9c.png";
     const imagemCavaleiroAtaque = new Image();
@@ -136,10 +43,8 @@
     const imagemGoblinAtaque = new Image();
     imagemGoblinAtaque.src = "https://files.catbox.moe/wy3kh2.png";
 
-
     let jogoAcabou = false;
     let mensagemFinal = "";
-
 
     let vidaCavaleiro = 100; 
     let quadro = 0;
@@ -159,8 +64,6 @@
     let cooldownDash = 500; 
     let ultimoDash = 0;
 
-
-
     const escalaCavaleiro = 3;
     const larguraQuadro = 100;
     const alturaQuadro = 100;
@@ -177,7 +80,6 @@
     const totalQuadros = 6;
     const intervaloQuadros = 100;
 
-
     const totalQuadrosAtaque = 6;
     const intervaloAtaque = 100;
     const corteXAtk = 25;
@@ -188,7 +90,6 @@
     const novaLarguraAtk = larguraCorteAtk * escalaAtaque;
     const novaAlturaAtk = alturaCorteAtk * escalaAtaque;
 
-
     let vidaGoblin = 200; 
     let goblinRecebendoDano = false; 
     let danoGoblinJaAplicado = false; 
@@ -197,7 +98,6 @@
     let posicaoXGoblin = 300;
     let goblinAtacando = false;
     let quadroAtaqueGoblin = 0;
-
 
     const totalQuadrosGoblin = 4;
     const intervaloQuadrosGoblin = 150;
@@ -212,7 +112,6 @@
     const alturaGoblin = alturaCorteGoblin * escalaGoblin;
     const posicaoYGoblin = tela.height - 136;
 
-
     const intervaloAtaqueGoblin = 240; 
     const totalQuadrosAtaqueGoblin = 6;
     const larguraQuadroAtkGoblin = 100;
@@ -221,7 +120,6 @@
     const larguraCorteAtkGoblin = 30;
     const alturaCorteAtkGoblin = 40;
     const posicaoYAtaqueGoblin = tela.height - 180;
-
 
     let ultimoTempo = 0;
     let ultimoTempoAtaque = 0;
@@ -244,16 +142,15 @@
         quadroAtaque = 0;
         ultimoTempoAtaque = 0;
         danoJaAplicado = false;
-    }
+      }
       if (evento.key === "q" && !estaDandoDash) {
         const agora = performance.now();
-      if (agora - ultimoDash >= cooldownDash) {
-        estaDandoDash = true;
-        tempoDashRestante = duracaoDash;
-        ultimoDash = agora;
+        if (agora - ultimoDash >= cooldownDash) {
+          estaDandoDash = true;
+          tempoDashRestante = duracaoDash;
+          ultimoDash = agora;
+        }
       }
-    }
-
     });
 
     document.addEventListener("keyup", (evento) => {
@@ -303,6 +200,7 @@
         ctx.textAlign = "center";
         ctx.fillText(mensagemFinal, tela.width / 2, tela.height / 2);
     }
+
     function animar(tempo) {
       if (jogoAcabou) {
           desenharTelaFinal();
@@ -325,9 +223,9 @@
         posicaoXCavaleiro = Math.max(0, Math.min(tela.width - novaLargura, posicaoXCavaleiro));
 
         tempoDashRestante -= tempo - ultimoTempo;
-      if (tempoDashRestante <= 0) {
-        estaDandoDash = false;
-       }
+        if (tempoDashRestante <= 0) {
+          estaDandoDash = false;
+        }
       }
       if (vidaGoblin > 0) {
         let imagemAtual, quadroAtual, larguraQuadro, cX, cY, cW, cH;
@@ -336,7 +234,7 @@
         let alcanceAtaqueDireita = 140;
         let alcanceAtaqueEsquerda = 40;
         let estaNaDireita = posicaoXCavaleiro > posicaoXGoblin;
-        goblinAtacando = !cavaleiroPulando && (
+        let goblinAtacando = !cavaleiroPulando && (
             (estaNaDireita && (posicaoXCavaleiro - posicaoXGoblin) <= alcanceAtaqueDireita) ||
             (!estaNaDireita && (posicaoXGoblin - posicaoXCavaleiro) <= alcanceAtaqueEsquerda)
         );
@@ -419,7 +317,6 @@
       ctx.save();
       let desenharX;
       if (estaAtacando) {
-
         desenharX = posicaoXCavaleiro - (novaLarguraAtk - novaLargura) / 2;
       } else {
         desenharX = posicaoXCavaleiro;
@@ -433,6 +330,7 @@
         ctx.drawImage(spriteAtual, quadroAtualCavaleiro * larguraQuadro + cxCavaleiro, cyCavaleiro, cwCavaleiro, chCavaleiro, desenharX, posicaoYCavaleiro, nw, nh);
       }
       ctx.restore();
+
       if (estaAtacando && !danoJaAplicado && vidaGoblin > 0) {
         const caixaAtaque = {
           x: ultimoLado === 1 ? posicaoXCavaleiro : posicaoXCavaleiro - (novaLarguraAtk - novaLargura),
@@ -478,4 +376,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
